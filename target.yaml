@@ -1,0 +1,21 @@
+apis:
+  # 接口方法，支持GET、POST、PUT、PATCH和DELETE，不填默认支持所有方法
+  - method: GET
+    # HTTP URL
+    url: /
+    # HTTP 响应头，key-value格式
+    headers:
+      Content-Type: "text/html; charset=utf-8"
+      Server: "Target Server 1.0"
+      Date: Tue, 04 Aug 2020 12:21:53 GMT
+    # HTTP 响应体，以@开头表示从文件读取，否则直接使用body的值作为响应体
+    body: "Welcome to Target Server! It is designed to mock third-part service while you do load test."
+    # 服务端响应时长，单位：ms
+    latency_millisecond: 500
+
+  - method: POST
+    url: /hello
+    headers:
+      Content-Type: "application/json"
+    body: "@hello.json"
+    latency_millisecond: 200
