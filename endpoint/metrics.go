@@ -1,9 +1,9 @@
 package endpoint
 
-import "github.com/go-kit/kit/metrics"
+import "github.com/prometheus/client_golang/prometheus"
 
 type Metrics struct {
-	ReqDuration    metrics.Histogram
-	ReqCounter     metrics.Counter
-	OpenConnection metrics.Gauge
+	ReqDuration    prometheus.Histogram
+	ReqCounter     prometheus.Counter
+	OpenConnection prometheus.Gauge
 }

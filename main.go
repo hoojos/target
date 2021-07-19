@@ -2,35 +2,38 @@ package main
 
 import (
 	"flag"
-	"github.com/sirupsen/logrus"
+	"github.com/hoojos/target/endpoint"
+	"github.com/hoojos/target/log"
+	"github.com/hoojos/target/middleware"
+	"github.com/hoojos/target/middleware/logging"
+	"github.com/hoojos/target/middleware/recovery"
 	"github.com/valyala/fasthttp"
-	"target/endpoint"
 )
 
-
 func main() {
-	var conf    string
+	var conf string
 	flag.StringVar(&conf, "config", "target.yaml", "Config filename")
 	flag.Parse()
 
 	config, err := endpoint.ParseConfig(conf)
 	if err != nil {
-		logrus.WithError(err).Error("parse config error")
+		log.WithError(err).Error("parse config error")
 	}
 
 	endpoints, err := config.Endpoints()
 	if err != nil {
-		logrus.WithError(err).Error("parse endpoints error")
+		log.WithError(err).Error("parse endpoints error")
 	}
 	router := endpoint.Router(endpoints)
+	middlewares := middleware.Chain(logging.Use(log.DefaultLogger), recovery.Recovery())
 	server := &fasthttp.Server{
-		Handler:      router.HandleRequest,
+		Handler:      middlewares(router.Handler),
 		Name:         "Target Server",
 		ReadTimeout:  config.Timeout,
 		WriteTimeout: config.Timeout,
 	}
 	err = server.ListenAndServe(config.Addr)
 	if err != nil {
-		logrus.WithError(err).Error("Listen error")
+		log.WithError(err).Error("Listen error")
 	}
 }

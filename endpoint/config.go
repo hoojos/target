@@ -1,13 +1,13 @@
 package endpoint
 
 import (
-	"github.com/pkg/errors"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"strings"
 	"time"
-)
 
+	"github.com/pkg/errors"
+	"gopkg.in/yaml.v2"
+)
 
 type APIConfig struct {
 	Method             string            `yaml:"method"`
@@ -18,9 +18,9 @@ type APIConfig struct {
 }
 
 type Config struct {
-	Addr string `yaml:"addr"`
+	Addr    string        `yaml:"addr"`
 	Timeout time.Duration `yaml:"timeout"`
-	APIs []APIConfig `yaml:"apis"`
+	APIs    []APIConfig   `yaml:"apis"`
 }
 
 func ParseConfig(filename string) (*Config, error) {
@@ -34,11 +34,10 @@ func ParseConfig(filename string) (*Config, error) {
 		return nil, errors.WithStack(err)
 	}
 
-
 	return &config, nil
 }
 
-func (c Config)Endpoints() ([]Endpoint, error) {
+func (c Config) Endpoints() ([]Endpoint, error) {
 	var err error
 	endpoints := make([]Endpoint, 0, len(c.APIs))
 	for _, api := range c.APIs {
